@@ -6,6 +6,7 @@ class Student:
         self.finished_courses = []
         self.courses_in_progress = []
         self.grades = {}
+        self.avg_dz_grade = 0
 
     def lect_grade(self, lect, course, grade):
         if isinstance(lect, Lecturer):
@@ -26,6 +27,14 @@ class Student:
                 f"Курсы в процессе изучения: {courses_in_progress_str}\n"
                 f"Завершенные курсы: {finished_courses_str}\n")
 
+    def __lt__(self, other):
+        return self.avg_dz_grade < other.avg_dz_grade
+
+    def __eq__(self, other):
+        return self.avg_dz_grade == other.avg_dz_grade
+
+    def __gt__(self, other):
+        return self.avg_dz_grade > other.avg_dz_grade
 
 class Mentor:
     def __init__(self, name, surname):
@@ -37,17 +46,29 @@ class Mentor:
         return f"Имя: {self.name}\n" f"Фамилия: {self.surname}\n"
 
 
+
 class Lecturer(Mentor):
     def __init__(self, name, surname, course):
         super().__init__(name, surname)
         self.course_taught = course
         self.st_grades = {}
+        self.avg_grade = 0
 
     def __str__(self):
-        avg_grade = sum(sum(grades) for grades in self.st_grades.values()) / sum(len(grades) for grades in self.st_grades.values())
         return (f"Имя: {self.name}\n"
                 f"Фамилия: {self.surname}\n"
-                f"Средняя оценка за лекции: {avg_grade}\n")
+                f"Средняя оценка за лекции: {self.avg_grade}\n")
+
+
+    def __lt__(self, other):
+        return self.avg_grade < other.avg_grade
+
+    def __eq__(self, other):
+        return self.avg_grade == other.avg_grade
+
+    def __gt__(self, other):
+        return self.avg_grade > other.avg_grade
+
 
 
 class Reviewer(Mentor):
@@ -121,6 +142,24 @@ def avg_lecture_grade(lecturers, course):
     else:
         return 0
 
-# Проверка функций
+
+# Сравнение лекторов
+if lecturer1 < lecturer2:
+    print(f"{lecturer1.name} {lecturer1.surname} имеет более низкую среднюю оценку за лекции, чем {lecturer2.name} {lecturer2.surname}")
+elif lecturer1 == lecturer2:
+    print(f"Средняя оценка за лекции {lecturer1.name} {lecturer1.surname} и {lecturer2.name} {lecturer2.surname} одинакова")
+else:
+    print(f"{lecturer1.name} {lecturer1.surname} имеет более высокую среднюю оценку за лекции, чем {lecturer2.name} {lecturer2.surname}")
+
+# Сравнение студентов
+if student1 < student2:
+    print(f"{student1.name} {student1.surname} имеет более низкую среднюю оценку за домашние задания, чем {student2.name} {student2.surname}")
+elif student1 == student2:
+    print(f"Средняя оценка за домашние задания {student1.name} {student1.surname} и {student2.name} {student2.surname} одинакова")
+else:
+    print(f"{student1.name} {student1.surname} имеет более высокую среднюю оценку за домашние задания, чем {student2.name} {student2.surname}")
+
+
+ # Проверка функций
 print("Средняя оценка за домашние задания по курсу Python:", avg_hw_grade([student1, student2], 'Python'))
 print("Средняя оценка за лекции по курсу GIT:", avg_lecture_grade([lecturer1, lecturer2], 'GIT'))
